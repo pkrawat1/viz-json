@@ -1,8 +1,12 @@
+import react, { useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import { FileReader, JsonNavigator } from './../components';
+import { ExampleJson } from './../components/defaults';
 
 const Home = () => {
+  const [jsonData, setJsonData] = useState(ExampleJson);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,10 +17,10 @@ const Home = () => {
       <main className={styles.main}>
         <div className={styles.grid}>
           <div className={styles.card}>
-            <JsonNavigator />
+            <JsonNavigator jsonData={jsonData} />
           </div>
           <div className={styles.card}>
-            <FileReader />
+            <FileReader onFileRead={setJsonData} />
           </div>
         </div>
       </main>
@@ -31,6 +35,6 @@ const Home = () => {
       </footer>
     </div>
   );
-}
+};
 
 export default Home;

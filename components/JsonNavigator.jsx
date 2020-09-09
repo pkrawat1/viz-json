@@ -7,9 +7,9 @@ const Wrapper = styled.section`
   color: black;
 `;
 
-const Node = styled.div`
-  position: relative;
-  padding: 0.3rem 0 0 1rem;
+const ScrollArea = styled.div`
+  min-height: 60vh;
+  overflow: scroll;
 `;
 
 const Children = styled.div`
@@ -18,49 +18,7 @@ const Children = styled.div`
   color: ${(props) => (props.match ? 'red' : 'black')};
 `;
 
-const JsonNavigator = () => {
-  const jsonData = {
-    store: {
-      book: [
-        {
-          category: 'reference',
-          author: 'Nigel Rees',
-          title: 'Sayings of the Century',
-          price: 8.95,
-        },
-        {
-          category: 'fiction',
-          author: 'Evelyn Waugh',
-          title: 'Sword of Honour',
-          price: 12.99,
-        },
-        {
-          category: 'fiction',
-          author: 'Herman Melville',
-          title: 'Moby Dick',
-          isbn: '0-553-21311-3',
-          price: 8.99,
-        },
-        {
-          category: 'fiction',
-          author: 'J. R. R. Tolkien',
-          title: 'The Lord of the Rings',
-          isbn: '0-395-19395-8',
-          price: 22.99,
-        },
-      ],
-      bicycle: [
-        {
-          color: 'red',
-          price: 19.95,
-        },
-        {
-          color: 'blue',
-          price: 15.95,
-        },
-      ],
-    },
-  };
+const JsonNavigator = ({ jsonData }) => {
   const [itemVisibleList, setItemVisibleList] = useState({});
   const [matchPath, setMatchPath] = useState([]);
 
@@ -76,7 +34,9 @@ const JsonNavigator = () => {
       setMatchPath(
         jp.paths(jsonData, query).map((match) => jp.stringify(match))
       );
-    } catch {}
+    } catch {
+      setMatchPath([]);
+    }
   }, []);
 
   const renderNodes = (objData, level = 0) => {
@@ -111,7 +71,9 @@ const JsonNavigator = () => {
 
             default:
               return (
-                <Children match={matchPath?.includes(`$.${key}`)} key={`$.${key}`}>
+                <Children
+                  match={matchPath?.includes(`$.${key}`)}
+                  key={`$.${key}`}>
                   {key}: {objData[key]} <br />
                 </Children>
               );
@@ -126,7 +88,7 @@ const JsonNavigator = () => {
     <Wrapper>
       <JsonQueryInput onChange={handleQuery} />
       <h3>Navigation Tree</h3>
-      {renderNodes(jsonData)}
+      <ScrollArea>{renderNodes(jsonData)}</ScrollArea>
     </Wrapper>
   );
 };
