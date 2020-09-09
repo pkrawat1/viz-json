@@ -19,15 +19,7 @@ const Children = styled.div`
 `;
 
 const JsonNavigator = ({ jsonData }) => {
-  const [itemVisibleList, setItemVisibleList] = useState({});
   const [matchPath, setMatchPath] = useState([]);
-
-  const handleToggleItemVisibility = (key) => {
-    setItemVisibleList({
-      ...itemVisibleList,
-      [key]: !itemVisibleList[key],
-    });
-  };
 
   const handleQuery = useCallback((query) => {
     try {
@@ -37,7 +29,7 @@ const JsonNavigator = ({ jsonData }) => {
     } catch {
       setMatchPath([]);
     }
-  }, []);
+  }, [jsonData]);
 
   const renderNodes = (objData, level = 0) => {
     return (
