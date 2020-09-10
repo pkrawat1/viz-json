@@ -17,10 +17,10 @@ const Home = () => {
       <main className={styles.main}>
         <div className={styles.grid}>
           <div className={styles.card}>
-            <JsonNavigator jsonData={jsonData} />
+            <FileReader onFileRead={setJsonData} />
           </div>
           <div className={styles.card}>
-            <FileReader onFileRead={setJsonData} />
+            <JsonNavigator jsonData={jsonData} />
           </div>
         </div>
       </main>
