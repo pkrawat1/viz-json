@@ -1,15 +1,18 @@
-import react, { useState, useCallback } from 'react';
+import react, { useEffect, useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { JsonQueryInput, JsonNodeList, JsonNodeObject } from './';
 import jp from 'jsonpath';
 import { generateMatchPaths } from '../utils/functions';
+import { useSelector } from 'react-redux';
+import { setMatchPaths } from '../store/actions';
+import { JsonQueryInput, JsonNodeList, JsonNodeObject } from './';
 
 const Wrapper = styled.section`
   color: black;
 `;
 
 const ScrollArea = styled.div`
-  max-height: 60vh;
+  height: 60vh;
   max-width: 300px;
   padding: 0 0.3rem;
   overflow: scroll;
@@ -22,20 +25,21 @@ const Children = styled.div`
 `;
 
 const JsonNavigator = ({ jsonData }) => {
-  const [matchPaths, setMatchPaths] = useState({});
+  const query = useSelector((state) => state.query);
+  const matchPaths = useSelector((state) => state.matchPaths);
+  const dispatch = useDispatch();
 
-  const handleQuery = useCallback(
-    (query) => {
-      try {
-        const jpPaths = jp.paths(jsonData, query);
-        setMatchPaths(generateMatchPaths(jpPaths));
-      } catch (_) {
-        console.log('error');
-        setMatchPaths({});
-      }
-    },
-    [jsonData]
-  );
+  useEffect(() => {
+    if (!query) {
+      return;
+    }
+    try {
+      const jpPaths = jp.paths(jsonData, query);
+      dispatch(setMatchPaths(generateMatchPaths(jpPaths)));
+    } catch (_) {
+      dispatch(setMatchPaths({}));
+    }
+  }, [query]);
 
   const renderNodes = (objData, level = 0) => {
     return (
@@ -89,7 +93,7 @@ const JsonNavigator = ({ jsonData }) => {
 
   return (
     <Wrapper>
-      <JsonQueryInput onChange={handleQuery} />
+      <JsonQueryInput query={query} />
       <h3>Navigation Tree</h3>
       <ScrollArea>{renderNodes(jsonData)}</ScrollArea>
     </Wrapper>
