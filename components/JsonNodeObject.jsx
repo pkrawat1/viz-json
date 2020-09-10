@@ -35,7 +35,7 @@ const propTypes = {
 };
 
 const JsonNodeObject = ({
-  matchPaths,
+  matchPaths = {},
   parentMatched,
   path,
   rootName,

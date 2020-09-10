@@ -1,7 +1,15 @@
-import '../styles/globals.css'
+import { Provider } from 'react-redux';
+import { useStore } from '../store';
+import '../styles/globals.css';
+import { ExampleJson } from './../components/defaults';
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+
+export default function App({ Component, pageProps }) {
+  const store = useStore({jsonData: ExampleJson});
+
+  return (
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
+  );
 }
-
-export default MyApp

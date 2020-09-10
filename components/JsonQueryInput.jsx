@@ -1,6 +1,8 @@
 import react, { memo, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import useDebounce from '../utils/debouce';
+import { setQuery } from '../store/actions';
 
 const Wrapper = styled.section`
   padding: 1rem 0;
@@ -32,13 +34,16 @@ const CloseButton = styled.button`
   }
 `;
 
-const JsonQueryInput = ({ onChange }) => {
-  const [query, setQuery] = useState();
-  const handleChange = ({ target: { value } }) => setQuery(value);
-  const debouncedQuery = useDebounce(query, 500);
+const JsonQueryInput = ({ onChange, query }) => {
+  const [queryTerm, setQueryTerm] = useState();
+  const dispatch = useDispatch();
+  const handleChange = ({ target: { value } }) => setQueryTerm(value);
+  const debouncedQuery = useDebounce(queryTerm, 500);
+
+  useEffect(() => setQueryTerm(query), [query])
 
   useEffect(() => {
-    debouncedQuery && onChange(debouncedQuery);
+    debouncedQuery && dispatch(setQuery(debouncedQuery));
   }, [debouncedQuery]);
 
   return (
@@ -48,9 +53,9 @@ const JsonQueryInput = ({ onChange }) => {
         type='text'
         query='query'
         onChange={handleChange}
-        value={query}
+        value={queryTerm}
       />
-      {query ? <CloseButton onClick={() => setQuery('$')} /> : null}
+      {queryTerm ? <CloseButton onClick={() => setQueryTerm('$')} /> : null}
     </Wrapper>
   );
 };
