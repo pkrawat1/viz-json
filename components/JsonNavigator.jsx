@@ -24,6 +24,16 @@ const Children = styled.div`
   color: ${(props) => (props.match ? 'red' : 'black')};
 `;
 
+const DocLink = styled.a`
+  color: palevioletred;
+  text-decoration: underline;
+  &:hover {
+    color: red;
+  }
+  display: block;
+  margin: 0 0 0.7rem;
+`
+
 const JsonNavigator = ({ jsonData }) => {
   const query = useSelector((state) => state.query);
   const matchPaths = useSelector((state) => state.matchPaths);
@@ -94,6 +104,7 @@ const JsonNavigator = ({ jsonData }) => {
   return (
     <Wrapper>
       <JsonQueryInput query={query} />
+      <DocLink href="https://hackmd.io/w-INXryRRjOhTbLwWgy6Pw?view" target="_blank">Documentation and Examples</DocLink>
       <h3>Navigation Tree</h3>
       <ScrollArea>{renderNodes(jsonData)}</ScrollArea>
     </Wrapper>
