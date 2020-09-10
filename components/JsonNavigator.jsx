@@ -2,6 +2,7 @@ import react, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { JsonQueryInput, JsonNodeList, JsonNodeObject } from './';
 import jp from 'jsonpath';
+import { generateMatchPaths } from '../utils/functions';
 
 const Wrapper = styled.section`
   color: black;
@@ -9,6 +10,7 @@ const Wrapper = styled.section`
 
 const ScrollArea = styled.div`
   min-height: 60vh;
+  min-width: 300px;
   overflow: scroll;
 `;
 
@@ -19,17 +21,21 @@ const Children = styled.div`
 `;
 
 const JsonNavigator = ({ jsonData }) => {
-  const [matchPath, setMatchPath] = useState([]);
+  const [matchPaths, setMatchPaths] = useState({});
 
-  const handleQuery = useCallback((query) => {
-    try {
-      setMatchPath(
-        jp.paths(jsonData, query).map((match) => jp.stringify(match))
-      );
-    } catch {
-      setMatchPath([]);
-    }
-  }, [jsonData]);
+  const handleQuery = useCallback(
+    (query) => {
+      try {
+        const jpPaths = jp.paths(jsonData, query);
+        setMatchPaths(generateMatchPaths(jpPaths));
+      } catch {
+        setMatchPaths({});
+      }
+    },
+    [jsonData]
+  );
+
+  console.log(matchPaths)
 
   const renderNodes = (objData, level = 0) => {
     return (
@@ -39,7 +45,7 @@ const JsonNavigator = ({ jsonData }) => {
             case 'Array':
               return (
                 <JsonNodeList
-                  matchPath={matchPath}
+                  matchPaths={matchPaths}
                   path={`$.${key}`}
                   key={`$.${key}`}
                   rootName={key}
@@ -51,7 +57,7 @@ const JsonNavigator = ({ jsonData }) => {
             case 'Object':
               return (
                 <JsonNodeObject
-                  matchPath={matchPath}
+                  matchPaths={matchPaths}
                   key={`$.${key}`}
                   path={`$.${key}`}
                   rootName={key}
@@ -64,7 +70,7 @@ const JsonNavigator = ({ jsonData }) => {
             default:
               return (
                 <Children
-                  match={matchPath?.includes(`$.${key}`)}
+                  match={matchPaths[`$.${key}`]}
                   key={`$.${key}`}>
                   {key}: {objData[key]} <br />
                 </Children>

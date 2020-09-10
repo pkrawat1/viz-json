@@ -3,6 +3,7 @@ import { string } from 'prop-types';
 import styled from 'styled-components';
 import { JsonNodeList } from './';
 import { Button } from './Styles';
+import { matchPrevPath } from '../utils/functions';
 
 const Node = styled.div`
   position: relative;
@@ -26,6 +27,7 @@ const Children = styled.div`
   &:last-child {
     padding-bottom: 0.3rem;
   }
+  color: ${(props) => (props.match ? 'red' : 'black')};
 `;
 
 const propTypes = {
@@ -33,7 +35,7 @@ const propTypes = {
 };
 
 const JsonNodeObject = ({
-  matchPath,
+  matchPaths,
   parentMatched,
   path,
   rootName,
@@ -41,11 +43,19 @@ const JsonNodeObject = ({
   level,
 }) => {
   const [isDataVisible, setIsDataVisible] = useState(false);
-  const highLightChildren = matchPath?.includes(path) || parentMatched;
+  const highLightChildren = matchPaths[path] || parentMatched;
 
   useEffect(() => {
     level < 2 ? setIsDataVisible(true) : null;
   }, [level]);
+
+  useEffect(() => {
+    matchPrevPath(path, matchPaths)
+      ? setIsDataVisible(true)
+      : level < 2
+      ? setIsDataVisible(true)
+      : setIsDataVisible(false);
+  }, [matchPaths]);
 
   return (
     <Node match={highLightChildren} parentIsList={!rootName}>
@@ -65,7 +75,7 @@ const JsonNodeObject = ({
                   return (
                     <JsonNodeList
                       parentMatched={highLightChildren}
-                      matchPath={matchPath}
+                      matchPaths={matchPaths}
                       path={`${path}.${key}`}
                       key={`${path}.${key}`}
                       rootName={key}
@@ -78,7 +88,7 @@ const JsonNodeObject = ({
                   return (
                     <JsonNodeObject
                       parentMatched={highLightChildren}
-                      matchPath={matchPath}
+                      matchPaths={matchPaths}
                       path={`${path}.${key}`}
                       key={`${path}.${key}`}
                       objData={objData[key]}
@@ -91,7 +101,7 @@ const JsonNodeObject = ({
                   return (
                     <Children
                       match={
-                        matchPath?.includes(`${path}.${key}`) ||
+                        matchPaths[`${path}.${key}`] ||
                         highLightChildren
                       }
                       key={`${path}.${key}`}>

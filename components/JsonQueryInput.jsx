@@ -25,6 +25,7 @@ const CloseButton = styled.button`
   right: 0.5rem;
   top: 1.4rem;
   cursor: pointer;
+  outline: none;
   ::after {
     content: 'x';
   }
