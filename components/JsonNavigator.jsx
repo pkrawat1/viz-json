@@ -29,7 +29,7 @@ const JsonNavigator = ({ jsonData }) => {
         const jpPaths = jp.paths(jsonData, query);
         setMatchPaths(generateMatchPaths(jpPaths));
       } catch (_) {
-        console.log('error')
+        console.log('error');
         setMatchPaths({});
       }
     },
@@ -40,6 +40,13 @@ const JsonNavigator = ({ jsonData }) => {
     return (
       <>
         {Object.keys(objData).map((key) => {
+          if (!objData[key]) {
+            return (
+              <Children>
+                {key}: null <br />
+              </Children>
+            );
+          }
           switch (objData[key].constructor.name) {
             case 'Array':
               return (
@@ -68,9 +75,7 @@ const JsonNavigator = ({ jsonData }) => {
 
             default:
               return (
-                <Children
-                  match={matchPaths[`$.${key}`]}
-                  key={`$.${key}`}>
+                <Children match={matchPaths[`$.${key}`]} key={`$.${key}`}>
                   {key}: {objData[key]} <br />
                 </Children>
               );

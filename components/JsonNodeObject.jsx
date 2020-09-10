@@ -70,6 +70,13 @@ const JsonNodeObject = ({
       <ChildContainer match={highLightChildren}>
         {isDataVisible
           ? Object.keys(objData).map((key) => {
+              if (!objData[key]) {
+                return (
+                  <Children>
+                    {key}: null <br />
+                  </Children>
+                );
+              }
               switch (objData[key].constructor.name) {
                 case 'Array':
                   return (
@@ -100,10 +107,7 @@ const JsonNodeObject = ({
                 default:
                   return (
                     <Children
-                      match={
-                        matchPaths[`${path}.${key}`] ||
-                        highLightChildren
-                      }
+                      match={matchPaths[`${path}.${key}`] || highLightChildren}
                       key={`${path}.${key}`}>
                       {key}: {objData[key]} <br />
                     </Children>

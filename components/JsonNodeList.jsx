@@ -65,6 +65,13 @@ const JsonNodeList = ({
       <ChildContainer match={highLightChildren}>
         {isDataVisible
           ? listData.map((listItem, index) => {
+              if (!listItem) {
+                return (
+                  <Children>
+                    null <br />
+                  </Children>
+                );
+              }
               switch (listItem.constructor.name) {
                 case 'Array':
                   return (
