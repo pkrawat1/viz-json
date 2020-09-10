@@ -9,8 +9,9 @@ const Wrapper = styled.section`
 `;
 
 const ScrollArea = styled.div`
-  min-height: 60vh;
-  min-width: 300px;
+  max-height: 60vh;
+  max-width: 300px;
+  padding: 0 0.3rem;
   overflow: scroll;
 `;
 

@@ -8,5 +8,6 @@ export const Button = styled.button`
   border-radius: 3px;
   border: 2px solid palevioletred;
   color: palevioletred;
-  margin-right: 0.3rem;
+  position: absolute;
+  left: -0.3rem;
 `;
