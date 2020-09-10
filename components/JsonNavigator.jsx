@@ -28,14 +28,13 @@ const JsonNavigator = ({ jsonData }) => {
       try {
         const jpPaths = jp.paths(jsonData, query);
         setMatchPaths(generateMatchPaths(jpPaths));
-      } catch {
+      } catch (_) {
+        console.log('error')
         setMatchPaths({});
       }
     },
     [jsonData]
   );
-
-  console.log(matchPaths)
 
   const renderNodes = (objData, level = 0) => {
     return (

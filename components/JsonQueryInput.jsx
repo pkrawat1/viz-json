@@ -1,5 +1,6 @@
-import react, { useEffect, useState } from 'react';
+import react, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import useDebounce from '../utils/debouce';
 
 const Wrapper = styled.section`
   padding: 1rem 0;
@@ -32,10 +33,13 @@ const CloseButton = styled.button`
 `;
 
 const JsonQueryInput = ({ onChange }) => {
-  const [value, setValue] = useState();
-  const handleChange = ({ target: { value } }) => setValue(value);
+  const [query, setQuery] = useState();
+  const handleChange = ({ target: { value } }) => setQuery(value);
+  const debouncedQuery = useDebounce(query, 500);
 
-  useEffect(() => onChange(value), [value])
+  useEffect(() => {
+    debouncedQuery && onChange(debouncedQuery);
+  }, [debouncedQuery]);
 
   return (
     <Wrapper>
@@ -44,11 +48,11 @@ const JsonQueryInput = ({ onChange }) => {
         type='text'
         query='query'
         onChange={handleChange}
-        value={value}
+        value={query}
       />
-      {value ? <CloseButton onClick={() => setValue('')} /> : null}
+      {query ? <CloseButton onClick={() => setQuery('$')} /> : null}
     </Wrapper>
   );
 };
 
-export default JsonQueryInput;
+export default memo(JsonQueryInput);
